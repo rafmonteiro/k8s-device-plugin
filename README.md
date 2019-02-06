@@ -58,7 +58,7 @@ Once you have enabled this option on *all* the GPU nodes you wish to use,
 you can then enable GPU support in your cluster by deploying the following Daemonset:
 
 ```shell
-$ kubectl create -f https://raw.githubusercontent.com/NVIDIA/k8s-device-plugin/v1.11/nvidia-device-plugin.yml
+$ kubectl create -f https://raw.githubusercontent.com/rafmonteiro/k8s-device-plugin/v1.11/shared-nvidia-device-plugin.yml
 ```
 
 ### Running GPU Jobs
@@ -124,7 +124,7 @@ $ docker run --security-opt=no-new-privileges --cap-drop=ALL --network=none -it 
 
 #### Deploy as Daemon Set:
 ```shell
-$ kubectl create -f nvidia-device-plugin.yml
+$ kubectl create -f shared-nvidia-device-plugin.yml
 ```
 
 ### Without Docker

@@ -17,10 +17,11 @@ import (
 )
 
 const (
-	resourceName           = "nvidia.com/gpu"
+	resourceName           = "nvidia.com/shared-gpu"
 	serverSock             = pluginapi.DevicePluginPath + "nvidia.sock"
 	envDisableHealthChecks = "DP_DISABLE_HEALTHCHECKS"
 	allHealthChecks        = "xids"
+	envNumberContainersPerGPU = "DP_NUMBER_CONTAINERS_PER_GPU"
 )
 
 // NvidiaDevicePlugin implements the Kubernetes device plugin API
@@ -154,14 +155,20 @@ func (m *NvidiaDevicePlugin) Allocate(ctx context.Context, reqs *pluginapi.Alloc
 	devs := m.devs
 	responses := pluginapi.AllocateResponse{}
 	for _, req := range reqs.ContainerRequests {
+		realDeviceIDs := make([]string, len(req.DevicesIDs))
+		for idx, fakeID := range req.DevicesIDs {
+			realDeviceIDs[idx] = extractRealDeviceID(fakeID)
+		}
 		response := pluginapi.ContainerAllocateResponse{
 			Envs: map[string]string{
-				"NVIDIA_VISIBLE_DEVICES": strings.Join(req.DevicesIDs, ","),
+				"NVIDIA_VISIBLE_DEVICES": strings.Join(realDeviceIDs, ","),
 			},
 		}
+		log.Println("! Trying to allocate devices", realDeviceIDs)
 
 		for _, id := range req.DevicesIDs {
 			if !deviceExists(devs, id) {
+				//err := fmt.Errorf("invalid allocation request: unknown device: %s", id)
 				return nil, fmt.Errorf("invalid allocation request: unknown device: %s", id)
 			}
 		}

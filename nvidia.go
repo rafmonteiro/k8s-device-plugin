@@ -43,7 +43,7 @@ func getNumberContainersPerGPU() (numGPU uint) {
 	if rawNumGPU < 1 {
 		log.Panicf("Fatal: invalid %s environment variable value: %v\n", envNumberContainersPerGPU, rawNumGPU)
 	}
-	
+    numGPU = uint(rawNumGPU)
 	return
 }
 

@@ -27,6 +27,9 @@ spec:
       containers:
       - image: rafmonteiro/shared-k8s-device-plugin:1.11
         name: shared-nvidia-device-plugin-ctr
+        env:
+          - name: DP_NUMBER_CONTAINERS_PER_GPU
+            value: '100'
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
